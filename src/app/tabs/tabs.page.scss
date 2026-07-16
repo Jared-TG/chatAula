@@ -1,0 +1,52 @@
+/* ===================================================
+   Tab Bar - Estilo personalizado según prototipo
+   =================================================== */
+
+ion-tab-bar {
+  /* Fondo blanco con línea divisoria sutil */
+  --background: #ffffff;
+  border-top: 1px solid #e0e0e0;
+  padding: 6px 8px;
+  height: 64px;
+}
+
+ion-tab-button {
+  /* Estado inactivo: gris oscuro */
+  --color: #6b7280;
+  --color-selected: #2d6a4f;
+  --ripple-color: transparent;
+  --padding-start: 8px;
+  --padding-end: 8px;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  position: relative;
+  transition: all 0.3s ease;
+
+  /* Fondo redondeado para tab activa */
+  &.tab-selected {
+    background: #d4edda;
+    border-radius: 16px;
+    margin: 4px 2px;
+
+    ion-icon {
+      color: #2d6a4f;
+    }
+
+    ion-label {
+      color: #2d6a4f;
+      font-weight: 600;
+    }
+  }
+
+  ion-icon {
+    font-size: 24px;
+    margin-bottom: 2px;
+    transition: color 0.3s ease;
+  }
+
+  ion-label {
+    font-size: 12px;
+    transition: color 0.3s ease;
+  }
+}
