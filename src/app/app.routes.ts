@@ -15,11 +15,7 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./pages/groups/groups.component').then((m) => m.GroupsComponent),
       },
-      {
-        path: 'study',
-        loadComponent: () =>
-          import('./pages/study/study.component').then((m) => m.StudyComponent),
-      },
+
       {
         path: 'profile',
         loadComponent: () =>
