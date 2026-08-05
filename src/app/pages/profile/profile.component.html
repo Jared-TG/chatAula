@@ -1,15 +1,88 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>Perfil</ion-title>
+    <div class="header-content">
+      <div class="avatar-header-ring">
+        <div class="avatar-header-inner">
+          <img
+            *ngIf="isGoogleUser && user?.photoURL"
+            [src]="user!.photoURL"
+            alt="Foto de perfil"
+            class="avatar-header-img"
+          />
+          <ion-icon
+            *ngIf="!isGoogleUser || !user?.photoURL"
+            name="person-circle-outline"
+            class="avatar-header-placeholder"
+          ></ion-icon>
+        </div>
+      </div>
+      <ion-title>
+        <span class="header-logo">Chat Aula</span>
+      </ion-title>
+      <ion-icon name="log-out-outline" class="header-exit-icon"></ion-icon>
+    </div>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
-  <h2>Mi Perfil</h2>
-  <p>Esta es la página de tu perfil.</p>
+<ion-content>
+  <div class="profile-container">
 
-  <ion-button expand="block" color="danger" (click)="logout()" style="margin-top: 40px;">
-    <ion-icon name="log-out-outline" slot="start"></ion-icon>
-    Cerrar Sesión
-  </ion-button>
+    <!-- Account Header -->
+    <div class="account-header">
+      <h1>Mi cuenta</h1>
+      <p class="account-subtitle">
+        Gestiona tus preferencias de estudiante y seguridad de tu cuenta.
+      </p>
+    </div>
+
+    <!-- Email Card -->
+    <div class="info-card email-card">
+      <div class="card-label">
+        <div class="icon-bg email-icon-bg">
+          <ion-icon name="mail" class="label-icon"></ion-icon>
+        </div>
+        <span>CORREO INSTITUCIONAL</span>
+      </div>
+      <p class="card-value">{{ user?.email || 'Sin correo' }}</p>
+    </div>
+
+    <!-- Security Card -->
+    <div class="info-card security-card">
+      <div class="card-label">
+        <div class="icon-bg security-icon-bg">
+          <ion-icon name="shield-checkmark" class="label-icon"></ion-icon>
+        </div>
+        <span>SEGURIDAD</span>
+      </div>
+      <p class="card-value">Sesión iniciada con Firebase Auth</p>
+      <div class="security-badge">
+        <span class="badge-dot"></span>
+        Protección activa
+      </div>
+    </div>
+
+    <!-- Welcome Banner -->
+    <div class="welcome-banner">
+      <div class="banner-text">
+        <strong>Bienvenido de nuevo</strong>
+        <p>Tu historial académico y chats de estudio están sincronizados en todos tus dispositivos.</p>
+      </div>
+      <div class="banner-icon-bg">
+         <ion-icon name="cube-outline"></ion-icon>
+      </div>
+    </div>
+
+    <!-- Logout Button -->
+    <button class="logout-btn" (click)="logout()" [disabled]="isLoggingOut">
+      <ion-spinner *ngIf="isLoggingOut" name="crescent"></ion-spinner>
+      <ng-container *ngIf="!isLoggingOut">
+        <ion-icon name="power-outline"></ion-icon>
+        Cerrar sesión
+      </ng-container>
+    </button>
+
+    <!-- Footer -->
+    <p class="footer-text">Chat Aula v2.4.0 • Academic Ecosystem</p>
+
+  </div>
 </ion-content>
