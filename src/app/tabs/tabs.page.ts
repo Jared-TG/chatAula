@@ -31,7 +31,10 @@ import {
           <ion-label>Groups</ion-label>
         </ion-tab-button>
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> main
         <ion-tab-button tab="profile">
           <ion-icon name="person"></ion-icon>
           <ion-label>Profile</ion-label>
