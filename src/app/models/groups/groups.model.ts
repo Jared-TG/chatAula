@@ -10,3 +10,5 @@ export const Group = z.object({
 	category__id: z.string().trim().nonempty().nonoptional(),
 	created_by: Users.nonoptional()
 });
+
+export type Group = z.infer<typeof Group>

@@ -7,3 +7,5 @@ export const Message = z.object({
 	description: z.string().nonempty().nonoptional(),
 	sent_by: Users.omit({ email: true }).nonoptional(),
 });
+
+export type Message = z.infer<typeof Message>
