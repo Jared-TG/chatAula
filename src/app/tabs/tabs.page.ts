@@ -12,8 +12,6 @@ import {
   chatbubblesOutline,
   people,
   peopleOutline,
-  book,
-  bookOutline,
   person,
   personOutline,
 } from 'ionicons/icons';
@@ -31,11 +29,6 @@ import {
         <ion-tab-button tab="groups">
           <ion-icon name="people"></ion-icon>
           <ion-label>Groups</ion-label>
-        </ion-tab-button>
-
-        <ion-tab-button tab="study">
-          <ion-icon name="book"></ion-icon>
-          <ion-label>Study</ion-label>
         </ion-tab-button>
 
         <ion-tab-button tab="profile">
@@ -56,8 +49,6 @@ export class TabsPage {
       chatbubblesOutline,
       people,
       peopleOutline,
-      book,
-      bookOutline,
       person,
       personOutline,
     });

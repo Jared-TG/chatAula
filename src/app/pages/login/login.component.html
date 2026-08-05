@@ -1,0 +1,81 @@
+<ion-content class="ion-padding">
+  <div class="login-container">
+    
+    <div class="header-section">
+      <div class="logo-box">
+        <ion-icon name="chatbubble-ellipses-outline" color="primary"></ion-icon>
+      </div>
+      <h1>Chat Aula</h1>
+      <p>Tu red de estudio colaborativa</p>
+    </div>
+
+    <div class="form-card">
+      <h2 class="form-title">Bienvenido</h2>
+      <p class="form-subtitle">USA TU CORREO PARA ENTRAR AL CHAT</p>
+
+      <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
+        
+        <div class="input-group">
+          <label>Correo Electrónico</label>
+          <div class="input-wrapper" [class.has-error]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
+            <ion-icon name="mail-outline" class="input-icon"></ion-icon>
+            <input type="email" formControlName="email" placeholder="tu@universidad.edu" autocomplete="email">
+          </div>
+          <span class="error-msg" *ngIf="loginForm.get('email')?.hasError('required') && loginForm.get('email')?.touched">
+            El correo es requerido
+          </span>
+          <span class="error-msg" *ngIf="loginForm.get('email')?.hasError('email') && loginForm.get('email')?.touched">
+            Formato de correo inválido
+          </span>
+        </div>
+
+        <div class="input-group">
+          <div class="password-label-wrapper">
+            <label>Contraseña</label>
+          </div>
+          <div class="input-wrapper" [class.has-error]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+            <ion-icon name="lock-closed-outline" class="input-icon"></ion-icon>
+            <input [type]="showPassword ? 'text' : 'password'" formControlName="password" placeholder="••••••••" autocomplete="current-password">
+            <ion-icon 
+              [name]="showPassword ? 'eye-off-outline' : 'eye-outline'" 
+              class="toggle-password"
+              (click)="togglePasswordVisibility()">
+            </ion-icon>
+          </div>
+          <span class="error-msg" *ngIf="loginForm.get('password')?.hasError('required') && loginForm.get('password')?.touched">
+            La contraseña es requerida
+          </span>
+        </div>
+
+        <button type="submit" class="primary-btn" [disabled]="isLoading">
+          <span *ngIf="!isLoading">Iniciar sesión</span>
+          <ion-spinner name="crescent" *ngIf="isLoading"></ion-spinner>
+        </button>
+      </form>
+
+      <div class="divider">
+        <span>o continúa con</span>
+      </div>
+
+      <button type="button" class="google-btn" (click)="onGoogleLogin()" [disabled]="isGoogleLoading">
+        <ion-icon name="logo-google" *ngIf="!isGoogleLoading"></ion-icon>
+        <span *ngIf="!isGoogleLoading">Google</span>
+        <ion-spinner name="crescent" *ngIf="isGoogleLoading" color="medium"></ion-spinner>
+      </button>
+
+      <div class="footer-link">
+        ¿No tienes una cuenta todavía? <br>
+        <a routerLink="/register">Crear cuenta</a>
+      </div>
+    </div>
+  </div>
+
+  <ion-toast
+    [isOpen]="isToastOpen"
+    [message]="toastMessage"
+    duration="3000"
+    (didDismiss)="setOpen(false)"
+    color="danger"
+    position="bottom"
+  ></ion-toast>
+</ion-content>

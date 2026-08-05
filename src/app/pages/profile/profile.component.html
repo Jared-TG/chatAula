@@ -1,9 +1,15 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>Profile</ion-title>
+    <ion-title>Perfil</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <p>profile works!</p>
+<ion-content class="ion-padding">
+  <h2>Mi Perfil</h2>
+  <p>Esta es la página de tu perfil.</p>
+
+  <ion-button expand="block" color="danger" (click)="logout()" style="margin-top: 40px;">
+    <ion-icon name="log-out-outline" slot="start"></ion-icon>
+    Cerrar Sesión
+  </ion-button>
 </ion-content>
