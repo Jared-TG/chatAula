@@ -1,11 +1,11 @@
 import * as z from 'zod';
-import { Users } from '../users/users.model';
+import { UserDTO } from '../users/users.model';
 
-export const Message = z.object({
+export const MessageDTO = z.object({
 	_id: z.string().trim().nonempty().nonoptional(),
 	sent_at: z.date().default(new Date()),
 	description: z.string().nonempty().nonoptional(),
-	sent_by: Users.omit({ email: true }).nonoptional(),
+	sent_by: UserDTO.omit({ email: true, user_type: true }).nonoptional(),
 });
 
-export type Message = z.infer<typeof Message>
+export type MessageDTO = z.infer<typeof MessageDTO>

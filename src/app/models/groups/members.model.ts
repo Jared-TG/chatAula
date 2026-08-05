@@ -1,8 +1,14 @@
 import * as z from 'zod';
-import { Users } from '../users/users.model';
+import { UserDTO } from '../users/users.model';
 
-export const Member = Users.omit({
+export const MemberDTO = UserDTO.omit({
+	email: true,
+});
+
+export const CreateMemberRequestDTO = UserDTO.omit({
+	_id: true,
 	email: true,
 })
 
-export type Member = z.infer<typeof Member>
+export type MemberDTO = z.infer<typeof MemberDTO>
+export type CreateMemberRequestDTO = z.infer<typeof CreateMemberRequestDTO>;
