@@ -10,7 +10,7 @@ import {
   updateProfile,
   User
 } from '@angular/fire/auth';
-import { Firestore, doc, setDoc, getDoc, serverTimestamp } from '@angular/fire/firestore';
+import { Firestore, doc, setDoc, getDoc, updateDoc, serverTimestamp } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -88,5 +88,10 @@ export class AuthService {
   private async createUserDocument(uid: string, data: any) {
     const userDocRef = doc(this.firestore, `users/${uid}`);
     return await setDoc(userDocRef, data, { merge: true });
+  }
+
+  async updateUserRole(uid: string, role: string) {
+    const userDocRef = doc(this.firestore, `users/${uid}`);
+    return await updateDoc(userDocRef, { role });
   }
 }

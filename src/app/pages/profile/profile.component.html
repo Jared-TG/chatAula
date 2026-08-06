@@ -46,6 +46,23 @@
       <p class="card-value">{{ user?.email || 'Sin correo' }}</p>
     </div>
 
+    <!-- Role Card -->
+    <div class="info-card role-card" *ngIf="userRole === 'student'">
+      <div class="card-label">
+        <div class="icon-bg role-icon-bg">
+          <ion-icon name="school-outline" class="label-icon"></ion-icon>
+        </div>
+        <span>SISTEMA ACADÉMICO</span>
+      </div>
+      <div class="card-content">
+        <p class="card-value">Tu rol actual es <strong>Estudiante</strong></p>
+        <button class="role-change-btn" (click)="changeRoleToProfessor()" [disabled]="isChangingRole">
+          <ion-spinner *ngIf="isChangingRole" name="crescent"></ion-spinner>
+          <span *ngIf="!isChangingRole">Convertirse en Profesor</span>
+        </button>
+      </div>
+    </div>
+
     <!-- Security Card -->
     <div class="info-card security-card">
       <div class="card-label">
