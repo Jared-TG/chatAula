@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -12,13 +12,20 @@ import {
   IonIcon,
   IonFooter,
   IonInput,
-  IonAvatar
+  IonAvatar,
+  ModalController,
+  PopoverController,
+  IonPopover,
+  IonList,
+  IonItem,
+  IonLabel
 } from '@ionic/angular/standalone';
 import { ChatService } from '../../../services/chat.service';
 import { AuthService } from '../../../services/auth.service';
 import { addIcons } from 'ionicons';
-import { arrowBackOutline, sendOutline } from 'ionicons/icons';
+import { arrowBackOutline, sendOutline, personAddOutline, ellipsisVertical, informationCircleOutline, personCircleOutline } from 'ionicons/icons';
 import { Subscription } from 'rxjs';
+import { InviteUserComponent } from '../invite-user/invite-user.component';
 
 @Component({
   selector: 'app-chat-room',
@@ -37,7 +44,11 @@ import { Subscription } from 'rxjs';
     IonIcon,
     IonFooter,
     IonInput,
-    IonAvatar
+    IonAvatar,
+    IonPopover,
+    IonList,
+    IonItem,
+    IonLabel
   ]
 })
 export class ChatRoomComponent implements OnInit, OnDestroy {
@@ -45,28 +56,44 @@ export class ChatRoomComponent implements OnInit, OnDestroy {
   private router = inject(Router);
   private chatService = inject(ChatService);
   private authService = inject(AuthService);
+  private modalCtrl = inject(ModalController);
+  private popoverCtrl = inject(PopoverController);
 
   groupId: string = '';
   groupName: string = 'General';
   messages: any[] = [];
   newMessage: string = '';
   currentUserId: string = '';
+  currentUser: any = null;
+  isGoogleUser: boolean = false;
+  currentMemberIds: string[] = [];
 
   private msgSub!: Subscription;
 
   constructor() {
-    addIcons({ arrowBackOutline, sendOutline });
+    addIcons({ arrowBackOutline, sendOutline, personAddOutline, ellipsisVertical, informationCircleOutline, personCircleOutline });
   }
 
   ngOnInit() {
-    this.currentUserId = this.authService.currentUser?.uid || '';
+    this.currentUser = this.authService.currentUser;
+    this.currentUserId = this.currentUser?.uid || '';
+    if (this.currentUser && this.currentUser.providerData) {
+      this.isGoogleUser = this.currentUser.providerData.some((p: any) => p.providerId === 'google.com');
+    }
     
     this.route.paramMap.subscribe(params => {
       this.groupId = params.get('id') || '';
       if (this.groupId) {
-        // En una app real, también podríamos obtener los detalles de la sala
-        // para poner el título correcto en vez de 'General'
         this.loadMessages();
+        
+        // Obtener detalles del grupo para el nombre y miembros actuales
+        this.chatService.getGroups().subscribe(groups => {
+          const group = groups.find(g => g._id === this.groupId);
+          if (group) {
+            this.groupName = group.name;
+            this.currentMemberIds = group.memberIds || [];
+          }
+        });
       }
     });
   }
@@ -75,6 +102,20 @@ export class ChatRoomComponent implements OnInit, OnDestroy {
     this.msgSub = this.chatService.getMessages(this.groupId).subscribe((msgs: any[]) => {
       this.messages = msgs;
     });
+  }
+
+  async openInviteModal() {
+    const modal = await this.modalCtrl.create({
+      component: InviteUserComponent,
+      componentProps: {
+        groupId: this.groupId,
+        currentMemberIds: this.currentMemberIds
+      },
+      breakpoints: [0, 0.5, 0.8],
+      initialBreakpoint: 0.8
+    });
+    
+    await modal.present();
   }
 
   async sendMessage() {
