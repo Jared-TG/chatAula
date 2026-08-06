@@ -71,10 +71,16 @@ export class InviteUserComponent implements OnInit {
       this.currentUserId = user.uid;
     }
 
-    this.authService.getAllUsers().subscribe(allUsers => {
-      // Excluir al usuario actual de la lista
-      this.users = allUsers.filter(u => u.uid !== this.currentUserId);
-      this.filteredUsers = [...this.users];
+    this.authService.getAllUsers().subscribe({
+      next: (allUsers) => {
+        console.log('Usuarios obtenidos de Firestore:', allUsers);
+        // Excluir al usuario actual de la lista
+        this.users = allUsers.filter(u => u.uid !== this.currentUserId);
+        this.filteredUsers = [...this.users];
+      },
+      error: (err) => {
+        console.error('Error obteniendo usuarios. Verifica las reglas de Firestore.', err);
+      }
     });
   }
 
