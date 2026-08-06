@@ -1,4 +1,5 @@
 import * as z from 'zod';
+import { UserType } from './user_type.model';
 
 export const CreateUserEmail_PasswordRequestDTO = z.object({
 	email: z.email().nonempty().nonoptional(),
@@ -7,13 +8,15 @@ export const CreateUserEmail_PasswordRequestDTO = z.object({
 
 export const InsertUserRequestDTO = z.object({
 	email: z.email().nonempty().nonoptional(),
-	username: z.string().nonempty().nonoptional()
+	username: z.string().nonempty().nonoptional(),
+	user_type: UserType.nonoptional()
 });
 
 export const UserDTO = z.object({
 	_id: z.string().nonempty().nonoptional(),
 	email: z.email().nonempty().nonoptional(),
-	username: z.string().nonempty().nonoptional()
+	username: z.string().nonempty().nonoptional(),
+	user_type: UserType.nonoptional()
 });
 
 export type CreateUserEmail_PasswordRequestDTO = z.infer<typeof CreateUserEmail_PasswordRequestDTO>;
