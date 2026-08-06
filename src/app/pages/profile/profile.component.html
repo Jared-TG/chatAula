@@ -47,7 +47,7 @@
     </div>
 
     <!-- Role Card -->
-    <div class="info-card role-card" *ngIf="userRole === 'student'">
+    <div class="info-card role-card">
       <div class="card-label">
         <div class="icon-bg role-icon-bg">
           <ion-icon name="school-outline" class="label-icon"></ion-icon>
@@ -55,11 +55,26 @@
         <span>SISTEMA ACADÉMICO</span>
       </div>
       <div class="card-content">
-        <p class="card-value">Tu rol actual es <strong>Estudiante</strong></p>
-        <button class="role-change-btn" (click)="changeRoleToProfessor()" [disabled]="isChangingRole">
+        <p class="card-value">
+          Tu rol actual es <strong>{{ userRole === 'professor' ? 'Profesor' : 'Estudiante' }}</strong>
+        </p>
+        
+        <button 
+          class="role-change-btn" 
+          [class.secondary-btn]="userRole === 'professor'"
+          (click)="toggleRole()" 
+          [disabled]="isChangingRole">
+          
           <ion-spinner *ngIf="isChangingRole" name="crescent"></ion-spinner>
-          <span *ngIf="!isChangingRole">Convertirse en Profesor</span>
+          <span *ngIf="!isChangingRole">
+            {{ userRole === 'student' ? 'Convertirse en Profesor' : 'Volver a ser Estudiante' }}
+          </span>
         </button>
+
+        <div class="role-badge" *ngIf="userRole === 'professor'">
+          <ion-icon name="checkmark-circle" style="color: #137333; margin-right: 4px;"></ion-icon>
+          <span style="color: #137333; font-weight: 500; font-size: 14px;">Privilegios de docente activos</span>
+        </div>
       </div>
     </div>
 

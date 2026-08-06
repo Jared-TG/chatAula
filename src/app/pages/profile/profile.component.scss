@@ -57,6 +57,15 @@ ion-header {
         font-size: 24px;
         color: #0b57d0;
       }
+
+      &.secondary-btn {
+        background-color: #f1f3f4;
+        color: #5f6368;
+
+        &:active {
+          background-color: #e8eaed;
+        }
+      }
     }
   }
 }

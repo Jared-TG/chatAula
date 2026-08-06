@@ -21,7 +21,7 @@ import {
   personCircleOutline,
   logOutOutline,
   schoolOutline,
-  
+  checkmarkCircle
 } from 'ionicons/icons';
 import { User } from '@angular/fire/auth';
 import { doc, getDoc } from '@angular/fire/firestore';
@@ -64,7 +64,7 @@ export class ProfileComponent implements OnInit {
       personCircleOutline,
       logOutOutline,
       schoolOutline,
-      
+      checkmarkCircle
     });
   }
 
@@ -93,17 +93,18 @@ export class ProfileComponent implements OnInit {
     });
   }
 
-  async changeRoleToProfessor() {
+  async toggleRole() {
     if (!this.user) return;
 
     this.isChangingRole = true;
+    const newRole = this.userRole === 'student' ? 'professor' : 'student';
     
-    // Artificial delay of 5 seconds
-    await new Promise(resolve => setTimeout(resolve, 5000));
+    // Artificial delay of 2 seconds (reducido para mejor experiencia)
+    await new Promise(resolve => setTimeout(resolve, 2000));
 
     try {
-      await this.authService.updateUserRole(this.user.uid, 'professor');
-      this.userRole = 'professor';
+      await this.authService.updateUserRole(this.user.uid, newRole);
+      this.userRole = newRole;
     } catch (error) {
       console.error('Error updating role:', error);
     } finally {
