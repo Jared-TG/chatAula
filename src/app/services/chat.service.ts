@@ -6,7 +6,11 @@ import {
   collectionData, 
   serverTimestamp,
   query,
-  orderBy
+  orderBy,
+  where,
+  doc,
+  updateDoc,
+  arrayUnion
 } from '@angular/fire/firestore';
 import { AuthService } from './auth.service';
 import { Observable } from 'rxjs';
@@ -33,6 +37,7 @@ export class ChatService {
       name,
       description,
       created_at: serverTimestamp(),
+      memberIds: [user.uid],
       created_by: {
         _id: user.uid,
         email: user.email || '',
@@ -44,10 +49,24 @@ export class ChatService {
   }
 
   getGroups(): Observable<any[]> {
+    const user = this.authService.currentUser;
+    if (!user) throw new Error('User not authenticated');
+
     const groupsRef = collection(this.firestore, 'groups');
-    // Order by created_at descending (newest first)
-    const q = query(groupsRef, orderBy('created_at', 'desc'));
+    // Filtrar por grupos donde el usuario está en memberIds
+    const q = query(
+      groupsRef, 
+      where('memberIds', 'array-contains', user.uid),
+      orderBy('created_at', 'desc')
+    );
     return collectionData(q, { idField: '_id' });
+  }
+
+  async inviteUser(groupId: string, newUserId: string) {
+    const groupDocRef = doc(this.firestore, `groups/${groupId}`);
+    return await updateDoc(groupDocRef, {
+      memberIds: arrayUnion(newUserId)
+    });
   }
 
   // --- MESSAGES ---

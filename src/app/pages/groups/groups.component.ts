@@ -2,24 +2,32 @@ import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { 
-  IonContent, 
+  ReactiveFormsModule, 
+  FormGroup, 
+  FormControl, 
+  Validators 
+} from '@angular/forms';
+import { 
   IonHeader, 
-  IonTitle, 
   IonToolbar, 
-  IonFab, 
-  IonFabButton, 
-  IonIcon,
-  ModalController,
-  IonList,
-  IonItem,
-  IonLabel,
-  IonNote
+  IonContent, 
+  IonButton, 
+  IonButtons, 
+  IonIcon
 } from '@ionic/angular/standalone';
-import { CreateGroupComponent } from './create-group/create-group.component';
-import { ChatService } from '../../services/chat.service';
 import { addIcons } from 'ionicons';
-import { add, chatbubblesOutline } from 'ionicons/icons';
-import { Observable } from 'rxjs';
+import { 
+  arrowBackOutline, 
+  people, 
+  checkmarkCircle,
+  schoolOutline,
+  logOutOutline,
+  personCircleOutline,
+  addCircleOutline
+} from 'ionicons/icons';
+import { ChatService } from '../../services/chat.service';
+import { AuthService } from '../../services/auth.service';
+import { User } from '@angular/fire/auth';
 
 @Component({
   selector: 'app-groups',
@@ -28,48 +36,68 @@ import { Observable } from 'rxjs';
   standalone: true,
   imports: [
     CommonModule, 
-    IonContent, 
+    ReactiveFormsModule,
     IonHeader, 
-    IonTitle, 
     IonToolbar, 
-    IonFab, 
-    IonFabButton, 
+    IonContent, 
+    IonButton, 
+    IonButtons, 
     IonIcon,
-    IonList,
-    IonItem,
-    IonLabel,
-    IonNote
-  ],
+  ]
 })
 export class GroupsComponent implements OnInit {
-  private modalCtrl = inject(ModalController);
   private chatService = inject(ChatService);
+  private authService = inject(AuthService);
   private router = inject(Router);
 
-  groups$!: Observable<any[]>;
+  groupForm = new FormGroup({
+    name: new FormControl('', [Validators.required, Validators.minLength(3)]),
+    description: new FormControl('', [Validators.required])
+  });
+
+  selectedType: 'colaborativo' | 'organizado' = 'colaborativo';
+  isSubmitting = false;
+  
+  user: User | null = null;
+  isGoogleUser = false;
 
   constructor() {
-    addIcons({ add, chatbubblesOutline });
+    addIcons({ 
+      arrowBackOutline, 
+      people, 
+      checkmarkCircle,
+      schoolOutline,
+      logOutOutline,
+      personCircleOutline,
+      addCircleOutline
+    });
   }
 
   ngOnInit() {
-    this.groups$ = this.chatService.getGroups();
+    this.user = this.authService.currentUser;
+    this.isGoogleUser = this.user?.providerData.some(p => p.providerId === 'google.com') ?? false;
   }
 
-  async openCreateGroup() {
-    const modal = await this.modalCtrl.create({
-      component: CreateGroupComponent
-    });
-    
-    await modal.present();
-    
-    const { data } = await modal.onWillDismiss();
-    if (data?.created) {
-      console.log('Sala creada con éxito');
+  selectType(type: 'colaborativo' | 'organizado') {
+    this.selectedType = type;
+  }
+
+  dismiss() {
+    this.router.navigate(['/tabs/chats']);
+  }
+
+  async createGroup() {
+    if (this.groupForm.valid) {
+      this.isSubmitting = true;
+      try {
+        const { name, description } = this.groupForm.value;
+        await this.chatService.createGroup(name!, description!);
+        this.router.navigate(['/tabs/chats']);
+      } catch (error) {
+        console.error('Error al crear sala:', error);
+      } finally {
+        this.isSubmitting = false;
+      }
     }
-  }
-
-  openChatRoom(groupId: string) {
-    this.router.navigate(['/chat-room', groupId]);
   }
 }

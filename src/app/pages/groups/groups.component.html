@@ -1,35 +1,102 @@
 <ion-header class="ion-no-border">
   <ion-toolbar>
-    <ion-title>
-      <span class="header-logo">Salas de Chat</span>
-    </ion-title>
+    <div class="main-header-content">
+      <div class="header-logo-container">
+        <ion-icon name="school-outline" class="school-icon"></ion-icon>
+        <span class="header-logo">Chat Aula</span>
+      </div>
+      <div class="header-actions">
+        <ion-icon name="log-out-outline" class="exit-icon"></ion-icon>
+        <div class="avatar-header-ring" [class.google-ring]="isGoogleUser && user?.photoURL">
+          <div class="avatar-header-inner">
+            <img *ngIf="isGoogleUser && user?.photoURL" [src]="user!.photoURL" alt="Avatar" />
+            <ion-icon *ngIf="!isGoogleUser || !user?.photoURL" name="person-circle-outline" class="avatar-header-placeholder"></ion-icon>
+          </div>
+        </div>
+      </div>
+    </div>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <div class="groups-container">
-    <div class="empty-state" *ngIf="(groups$ | async)?.length === 0">
-      <ion-icon name="chatbubbles-outline"></ion-icon>
-      <p>No hay salas de chat disponibles. ¡Crea la primera!</p>
+<ion-content class="bg-gray">
+  <div class="create-group-container">
+    <div class="back-link" (click)="dismiss()">
+      <ion-icon name="arrow-back-outline"></ion-icon>
+      Volver
     </div>
 
-    <ion-list class="groups-list" *ngIf="(groups$ | async) as groups">
-      <ion-item button detail="true" *ngFor="let group of groups" (click)="openChatRoom(group._id)">
-        <div class="group-icon" slot="start">
-          <span>#</span>
-        </div>
-        <ion-label>
-          <h2>{{ group.name }}</h2>
-          <p>{{ group.description }}</p>
-          <span class="created-by">Creado por {{ group.created_by?.username }}</span>
-        </ion-label>
-      </ion-item>
-    </ion-list>
-  </div>
+    <div class="header-text">
+      <h1>Nueva sala</h1>
+      <p>Las salas sirven para organizar<br>conversaciones por tema</p>
+    </div>
 
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-    <ion-fab-button (click)="openCreateGroup()">
-      <ion-icon name="add"></ion-icon>
-    </ion-fab-button>
-  </ion-fab>
+    <form [formGroup]="groupForm" class="form-card">
+      <div class="form-group">
+        <label>NOMBRE DE LA SALA</label>
+        <div class="input-wrapper">
+          <span class="hashtag">#</span>
+          <input 
+            type="text" 
+            formControlName="name" 
+            placeholder="Ej: Álgebra Lineal - Grupo A" 
+            class="custom-input"
+          />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>DESCRIPCIÓN</label>
+        <textarea 
+          formControlName="description" 
+          placeholder="¿De qué trata este espacio? Añade detalles para tus compañeros..."
+          rows="3"
+          class="custom-textarea"
+        ></textarea>
+      </div>
+    </form>
+
+    <div class="type-cards">
+      <div 
+        class="type-card" 
+        [class.selected]="selectedType === 'colaborativo'"
+        (click)="selectType('colaborativo')"
+      >
+        <div class="icon-box blue">
+          <ion-icon name="people"></ion-icon>
+        </div>
+        <div class="text-content">
+          <strong>Colaborativo</strong>
+          <p>Cualquier estudiante del aula podrá<br>unirse.</p>
+        </div>
+      </div>
+
+      <div 
+        class="type-card" 
+        [class.selected]="selectedType === 'organizado'"
+        (click)="selectType('organizado')"
+      >
+        <div class="icon-box green">
+          <ion-icon name="checkmark-circle"></ion-icon>
+        </div>
+        <div class="text-content">
+          <strong>Organizado</strong>
+          <p>Categoriza tus hilos de estudio<br>fácilmente.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button 
+        class="btn-primary" 
+        (click)="createGroup()" 
+        [disabled]="groupForm.invalid || isSubmitting"
+      >
+        <ion-icon name="add-circle-outline"></ion-icon>
+        Crear sala
+      </button>
+      <button class="btn-secondary" (click)="dismiss()">
+        Cancelar
+      </button>
+    </div>
+  </div>
 </ion-content>

@@ -40,10 +40,39 @@ ion-header {
       }
     }
 
-    .header-avatar {
-      width: 32px;
-      height: 32px;
-      margin-right: 16px;
+    .avatar-header-ring {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      padding: 2px;
+      background: transparent;
+      margin-right: 8px;
+      
+      &.google-ring {
+        background: linear-gradient(135deg, #4285F4, #34A853, #FBBC05, #EA4335);
+      }
+
+      .avatar-header-inner {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        background-color: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+
+        .avatar-header-placeholder {
+          font-size: 32px;
+          color: #0b57d0;
+        }
+      }
     }
   }
 }
@@ -163,6 +192,46 @@ ion-footer {
           color: #9aa0a6;
           cursor: not-allowed;
         }
+      }
+    }
+  }
+}
+
+/* Estilos para el popover personalizado (claro) */
+.custom-popover {
+  --background: #ffffff;
+  --color: #202124;
+  --width: 230px;
+  --border-radius: 12px;
+  --offset-y: 5px;
+  --box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+
+  ion-content {
+    --background: #ffffff;
+  }
+
+  .group-menu-list {
+    background: transparent;
+    padding: 8px 0;
+
+    ion-item {
+      --background: transparent;
+      --color: #202124;
+      --min-height: 48px;
+      font-size: 15px;
+      font-weight: 500;
+      
+      &::part(native):hover {
+        background: #f4f6fa;
+      }
+
+      ion-icon {
+        margin-right: 12px;
+        font-size: 20px;
+      }
+
+      ion-label {
+        margin: 0;
       }
     }
   }

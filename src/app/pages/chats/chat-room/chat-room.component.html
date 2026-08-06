@@ -14,9 +14,37 @@
       </div>
     </div>
 
-    <ion-avatar slot="end" class="header-avatar">
-      <img src="https://ionicframework.com/docs/img/demos/avatar.svg" />
-    </ion-avatar>
+    <div class="header-actions" slot="end" style="display: flex; align-items: center; margin-right: 5px;">
+      
+      <!-- Avatar del usuario -->
+      <div class="avatar-header-ring" [class.google-ring]="isGoogleUser && currentUser?.photoURL">
+        <div class="avatar-header-inner">
+          <img *ngIf="isGoogleUser && currentUser?.photoURL" [src]="currentUser!.photoURL" alt="Avatar" />
+          <ion-icon *ngIf="!isGoogleUser || !currentUser?.photoURL" name="person-circle-outline" class="avatar-header-placeholder" style="color: #0b57d0; font-size: 32px;"></ion-icon>
+        </div>
+      </div>
+
+      <ion-button id="group-menu-btn" fill="clear">
+        <ion-icon name="ellipsis-vertical" style="color: #0b57d0; font-size: 24px;"></ion-icon>
+      </ion-button>
+
+      <ion-popover trigger="group-menu-btn" triggerAction="click" dismissOnSelect="true" class="custom-popover">
+        <ng-template>
+          <ion-content>
+            <ion-list lines="none" class="group-menu-list">
+              <ion-item button (click)="openInviteModal()" [detail]="false">
+                <ion-icon name="person-add-outline" slot="start" style="color: #0b57d0;"></ion-icon>
+                <ion-label>Añadir miembros</ion-label>
+              </ion-item>
+              <ion-item button [detail]="false">
+                <ion-icon name="information-circle-outline" slot="start" style="color: #5f6368;"></ion-icon>
+                <ion-label>Info. del grupo</ion-label>
+              </ion-item>
+            </ion-list>
+          </ion-content>
+        </ng-template>
+      </ion-popover>
+    </div>
   </ion-toolbar>
 </ion-header>
 
