@@ -1,0 +1,102 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <div class="main-header-content">
+      <div class="header-logo-container">
+        <ion-icon name="school-outline" class="school-icon"></ion-icon>
+        <span class="header-logo">Chat Aula</span>
+      </div>
+      <div class="header-actions">
+        <ion-icon name="log-out-outline" class="exit-icon"></ion-icon>
+        <div class="avatar-header-ring" [class.google-ring]="isGoogleUser && user?.photoURL">
+          <div class="avatar-header-inner">
+            <img *ngIf="isGoogleUser && user?.photoURL" [src]="user!.photoURL" alt="Avatar" />
+            <ion-icon *ngIf="!isGoogleUser || !user?.photoURL" name="person-circle-outline" class="avatar-header-placeholder"></ion-icon>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="bg-gray">
+  <div class="create-group-container">
+    <div class="back-link" (click)="dismiss()">
+      <ion-icon name="arrow-back-outline"></ion-icon>
+      Volver
+    </div>
+
+    <div class="header-text">
+      <h1>Nueva sala</h1>
+      <p>Las salas sirven para organizar<br>conversaciones por tema</p>
+    </div>
+
+    <form [formGroup]="groupForm" class="form-card">
+      <div class="form-group">
+        <label>NOMBRE DE LA SALA</label>
+        <div class="input-wrapper">
+          <span class="hashtag">#</span>
+          <input 
+            type="text" 
+            formControlName="name" 
+            placeholder="Ej: Álgebra Lineal - Grupo A" 
+            class="custom-input"
+          />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>DESCRIPCIÓN</label>
+        <textarea 
+          formControlName="description" 
+          placeholder="¿De qué trata este espacio? Añade detalles para tus compañeros..."
+          rows="3"
+          class="custom-textarea"
+        ></textarea>
+      </div>
+    </form>
+
+    <div class="type-cards">
+      <div 
+        class="type-card" 
+        [class.selected]="selectedType === 'colaborativo'"
+        (click)="selectType('colaborativo')"
+      >
+        <div class="icon-box blue">
+          <ion-icon name="people"></ion-icon>
+        </div>
+        <div class="text-content">
+          <strong>Colaborativo</strong>
+          <p>Cualquier estudiante del aula podrá<br>unirse.</p>
+        </div>
+      </div>
+
+      <div 
+        class="type-card" 
+        [class.selected]="selectedType === 'organizado'"
+        (click)="selectType('organizado')"
+      >
+        <div class="icon-box green">
+          <ion-icon name="checkmark-circle"></ion-icon>
+        </div>
+        <div class="text-content">
+          <strong>Organizado</strong>
+          <p>Categoriza tus hilos de estudio<br>fácilmente.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button 
+        class="btn-primary" 
+        (click)="createGroup()" 
+        [disabled]="groupForm.invalid || isSubmitting"
+      >
+        <ion-icon name="add-circle-outline"></ion-icon>
+        Crear sala
+      </button>
+      <button class="btn-secondary" (click)="dismiss()">
+        Cancelar
+      </button>
+    </div>
+  </div>
+</ion-content>

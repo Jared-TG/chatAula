@@ -1,0 +1,58 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="goBack()" class="back-btn">
+        <ion-icon name="arrow-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    
+    <div class="chat-header-title">
+      <h2>{{ groupName }}</h2>
+      <div class="status-indicator">
+        <span class="dot"></span>
+        Mensajes en tiempo real
+      </div>
+    </div>
+
+    <ion-avatar slot="end" class="header-avatar">
+      <img src="https://ionicframework.com/docs/img/demos/avatar.svg" />
+    </ion-avatar>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="chat-container">
+    <div *ngFor="let msg of messages" 
+         class="message-wrapper" 
+         [ngClass]="{'mine': msg.sent_by._id === currentUserId}">
+         
+      <div class="sender-name" *ngIf="msg.sent_by._id !== currentUserId">
+        {{ msg.sent_by.username }}
+      </div>
+      
+      <div class="message-bubble">
+        <p>{{ msg.description }}</p>
+      </div>
+      
+      <div class="message-time">
+        {{ msg.sent_at?.toDate ? (msg.sent_at.toDate() | date:'shortTime') : '' }}
+      </div>
+    </div>
+  </div>
+</ion-content>
+
+<ion-footer class="ion-no-border">
+  <div class="chat-input-container">
+    <div class="input-wrapper">
+      <input 
+        type="text" 
+        [(ngModel)]="newMessage" 
+        (keyup.enter)="sendMessage()"
+        placeholder="Escribe un mensaje..."
+      />
+      <button class="send-btn" (click)="sendMessage()" [disabled]="!newMessage.trim()">
+        <ion-icon name="send-outline"></ion-icon>
+      </button>
+    </div>
+  </div>
+</ion-footer>

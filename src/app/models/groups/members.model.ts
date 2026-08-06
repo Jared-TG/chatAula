@@ -1,7 +1,7 @@
 import * as z from 'zod';
-import { Users } from '../users/users.model';
+import { UserDTO } from '../users/users.model';
 
-export const Member = Users.omit({
+export const Member = UserDTO.omit({
 	email: true,
 })
 

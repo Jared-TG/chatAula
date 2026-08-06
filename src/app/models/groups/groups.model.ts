@@ -1,5 +1,5 @@
 import * as z from 'zod';
-import { Users } from '../users/users.model';
+import { UserDTO } from '../users/users.model';
 
 export const Group = z.object({
 	_id: z.string().trim().nonempty().nonoptional(),
@@ -8,7 +8,7 @@ export const Group = z.object({
 	total_messages: z.int().default(0),
 	created_at: z.date().default(new Date()),
 	category__id: z.string().trim().nonempty().nonoptional(),
-	created_by: Users.nonoptional()
+	created_by: UserDTO.nonoptional()
 });
 
 export type Group = z.infer<typeof Group>

@@ -1,9 +1,35 @@
-<ion-header>
+<ion-header class="ion-no-border">
   <ion-toolbar>
-    <ion-title>Groups</ion-title>
+    <ion-title>
+      <span class="header-logo">Salas de Chat</span>
+    </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <p>groups works!</p>
+  <div class="groups-container">
+    <div class="empty-state" *ngIf="(groups$ | async)?.length === 0">
+      <ion-icon name="chatbubbles-outline"></ion-icon>
+      <p>No hay salas de chat disponibles. ¡Crea la primera!</p>
+    </div>
+
+    <ion-list class="groups-list" *ngIf="(groups$ | async) as groups">
+      <ion-item button detail="true" *ngFor="let group of groups" (click)="openChatRoom(group._id)">
+        <div class="group-icon" slot="start">
+          <span>#</span>
+        </div>
+        <ion-label>
+          <h2>{{ group.name }}</h2>
+          <p>{{ group.description }}</p>
+          <span class="created-by">Creado por {{ group.created_by?.username }}</span>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+  </div>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="openCreateGroup()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 </ion-content>
