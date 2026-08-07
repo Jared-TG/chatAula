@@ -9,6 +9,7 @@ import {
   orderBy,
   where,
   doc,
+  getDoc,
   updateDoc,
   arrayUnion,
   deleteDoc,
@@ -41,6 +42,9 @@ export class ChatService {
       tag,
       created_at: serverTimestamp(),
       memberIds: [user.uid],
+      unreadCount: {
+        [user.uid]: 0
+      },
       created_by: {
         _id: user.uid,
         email: user.email || '',
@@ -68,7 +72,8 @@ export class ChatService {
   async inviteUser(groupId: string, newUserId: string) {
     const groupDocRef = doc(this.firestore, `groups/${groupId}`);
     return await updateDoc(groupDocRef, {
-      memberIds: arrayUnion(newUserId)
+      memberIds: arrayUnion(newUserId),
+      [`unreadCount.${newUserId}`]: 0
     });
   }
 
@@ -79,8 +84,9 @@ export class ChatService {
     if (!user) throw new Error('User not authenticated');
 
     const messagesRef = collection(this.firestore, `groups/${groupId}/messages`);
+    const groupDocRef = doc(this.firestore, `groups/${groupId}`);
+    const groupSnap = await getDoc(groupDocRef);
     
-    // sent_by excludes email as per DTO
     const messageData = {
       description: text,
       sent_at: serverTimestamp(),
@@ -90,7 +96,31 @@ export class ChatService {
       }
     };
 
-    return await addDoc(messagesRef, messageData);
+    const docRef = await addDoc(messagesRef, messageData);
+
+    if (groupSnap.exists()) {
+      const groupInfo = groupSnap.data();
+      const members = groupInfo['memberIds'] || [];
+      const unreadCountUpdates: any = {};
+      
+      members.forEach((mId: string) => {
+        if (mId !== user.uid) {
+           const currentCount = (groupInfo['unreadCount'] && groupInfo['unreadCount'][mId]) ? groupInfo['unreadCount'][mId] : 0;
+           unreadCountUpdates[`unreadCount.${mId}`] = currentCount + 1;
+        }
+      });
+      
+      await updateDoc(groupDocRef, {
+        lastMessage: {
+          description: text,
+          sent_at: serverTimestamp(),
+          sent_by: user.displayName || 'Estudiante'
+        },
+        ...unreadCountUpdates
+      });
+    }
+    
+    return docRef;
   }
 
   getMessages(groupId: string): Observable<any[]> {
@@ -117,6 +147,13 @@ export class ChatService {
     const groupDocRef = doc(this.firestore, `groups/${groupId}`);
     return await updateDoc(groupDocRef, {
       memberIds: arrayRemove(userId)
+    });
+  }
+  
+  async resetUnreadCount(groupId: string, userId: string) {
+    const groupDocRef = doc(this.firestore, `groups/${groupId}`);
+    await updateDoc(groupDocRef, {
+      [`unreadCount.${userId}`]: 0
     });
   }
 }

@@ -15,7 +15,8 @@ import {
   IonNote,
   IonSearchbar,
   IonChip,
-  IonAvatar
+  IonAvatar,
+  IonBadge
 } from '@ionic/angular/standalone';
 import { ChatService } from '../../services/chat.service';
 import { AuthService } from '../../services/auth.service';
@@ -52,7 +53,8 @@ import { Observable } from 'rxjs';
     IonNote,
     IonSearchbar,
     IonChip,
-    IonAvatar
+    IonAvatar,
+    IonBadge
   ],
 })
 export class ChatsComponent implements OnInit {
@@ -163,6 +165,11 @@ export class ChatsComponent implements OnInit {
     
     // Simple format just for UI mockup matching
     return new Intl.DateTimeFormat('es-MX', { hour: 'numeric', minute: 'numeric', hour12: true }).format(date);
+  }
+  
+  getUnreadCount(group: any): number {
+    if (!this.user || !group.unreadCount) return 0;
+    return group.unreadCount[this.user.uid] || 0;
   }
 
   async logout() {

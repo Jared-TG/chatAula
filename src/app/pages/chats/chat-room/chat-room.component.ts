@@ -104,6 +104,11 @@ export class ChatRoomComponent implements ViewWillEnter, OnDestroy {
       if (this.groupId) {
         this.loadMessages();
         
+        // Limpiar contador de mensajes no leídos al entrar
+        if (this.currentUserId) {
+          this.chatService.resetUnreadCount(this.groupId, this.currentUserId);
+        }
+
         // Obtener detalles del grupo para el nombre y miembros actuales
         this.chatService.getGroups().subscribe(groups => {
           const group = groups.find(g => g._id === this.groupId);
@@ -245,7 +250,7 @@ export class ChatRoomComponent implements ViewWillEnter, OnDestroy {
   }
 
   goBack() {
-    this.router.navigate(['/tabs/groups']);
+    this.router.navigate(['/tabs/chats']);
   }
 
   ngOnDestroy() {

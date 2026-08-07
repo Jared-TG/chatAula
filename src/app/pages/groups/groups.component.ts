@@ -99,6 +99,15 @@ export class GroupsComponent implements OnInit {
       try {
         const { name, description, tag } = this.groupForm.value;
         await this.chatService.createGroup(name!, description!, tag!);
+        
+        // Limpiar el formulario
+        this.groupForm.reset({
+          name: '',
+          description: '',
+          tag: 'Académicas'
+        });
+        this.selectedType = 'colaborativo';
+        
         this.router.navigate(['/tabs/chats']);
       } catch (error) {
         console.error('Error al crear sala:', error);

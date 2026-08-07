@@ -62,9 +62,12 @@
           <div class="text-content">
             <div class="title-row">
               <h3>{{ group.name }}</h3>
-              <span class="time">{{ formatTime(group.created_at) }}</span>
+              <span class="time">{{ formatTime(group.lastMessage?.sent_at || group.created_at) }}</span>
             </div>
-            <p>{{ group.description }}</p>
+            <div class="subtitle-row">
+              <p class="truncate-text">{{ group.lastMessage?.description || group.description }}</p>
+              <ion-badge *ngIf="getUnreadCount(group) > 0" color="primary" class="unread-badge">{{ getUnreadCount(group) }}</ion-badge>
+            </div>
           </div>
         </div>
       </div>
