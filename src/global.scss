@@ -35,3 +35,106 @@
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
 @import '@ionic/angular/css/palettes/dark.system.css';
+
+/* Custom Alert Styles */
+.custom-alert {
+  --background: #ffffff;
+  --backdrop-opacity: 0.6;
+  
+  .alert-wrapper {
+    border-radius: 16px !important;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1) !important;
+    background: #ffffff !important;
+  }
+  
+  .alert-title {
+    color: #202124 !important;
+    font-weight: 700 !important;
+    font-size: 18px !important;
+    margin-top: 10px;
+  }
+  
+  .alert-message {
+    color: #5f6368 !important;
+    font-size: 14px !important;
+    line-height: 1.5;
+  }
+  
+  .alert-button {
+    color: #0b57d0 !important;
+    font-weight: 600 !important;
+    text-transform: none !important;
+    
+    &.alert-button-role-cancel {
+      color: #5f6368 !important;
+    }
+    
+    &.alert-button-role-destructive {
+      color: #d93025 !important;
+    }
+  }
+
+  .alert-input {
+    border-radius: 8px !important;
+    border: 1px solid #dadce0 !important;
+    margin-top: 10px !important;
+    background: #f1f3f4 !important;
+    padding: 10px 14px !important;
+    color: #202124 !important;
+    
+    &:focus {
+      border-color: #0b57d0 !important;
+      background: #ffffff !important;
+    }
+  }
+}
+
+/* Custom Action Sheet Styles */
+.custom-action-sheet {
+  --background: #ffffff;
+  --backdrop-opacity: 0.6;
+
+  .action-sheet-wrapper {
+    background: #ffffff !important;
+    border-top-left-radius: 20px !important;
+    border-top-right-radius: 20px !important;
+  }
+
+  .action-sheet-title {
+    color: #202124 !important;
+    font-weight: 700 !important;
+    font-size: 15px !important;
+    padding: 16px 20px !important;
+    text-align: center !important;
+    border-bottom: 1px solid #f1f3f4 !important;
+  }
+
+  .action-sheet-button {
+    color: #202124 !important;
+    font-size: 16px !important;
+    font-weight: 500 !important;
+    padding: 16px 20px !important;
+    display: flex !important;
+    align-items: center !important;
+
+    .action-sheet-icon {
+      color: #5f6368 !important;
+      margin-right: 12px !important;
+      font-size: 20px !important;
+    }
+
+    &.action-sheet-destructive {
+      color: #d93025 !important;
+      .action-sheet-icon {
+        color: #d93025 !important;
+      }
+    }
+
+    &.action-sheet-cancel {
+      color: #5f6368 !important;
+      font-weight: 600 !important;
+      justify-content: center !important;
+      margin-top: 8px !important;
+    }
+  }
+}

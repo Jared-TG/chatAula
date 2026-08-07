@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { Component, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -15,17 +15,22 @@ import {
   IonAvatar,
   ModalController,
   PopoverController,
+  ActionSheetController,
+  AlertController,
   IonPopover,
   IonList,
   IonItem,
-  IonLabel
+  IonLabel,
+  ViewWillEnter
 } from '@ionic/angular/standalone';
+import { Firestore, doc, getDoc } from '@angular/fire/firestore';
 import { ChatService } from '../../../services/chat.service';
 import { AuthService } from '../../../services/auth.service';
 import { addIcons } from 'ionicons';
-import { arrowBackOutline, sendOutline, personAddOutline, ellipsisVertical, informationCircleOutline, personCircleOutline } from 'ionicons/icons';
+import { arrowBackOutline, sendOutline, personAddOutline, ellipsisVertical, informationCircleOutline, personCircleOutline, peopleOutline } from 'ionicons/icons';
 import { Subscription } from 'rxjs';
 import { InviteUserComponent } from '../invite-user/invite-user.component';
+import { ManageMembersComponent } from '../manage-members/manage-members.component';
 
 @Component({
   selector: 'app-chat-room',
@@ -51,13 +56,16 @@ import { InviteUserComponent } from '../invite-user/invite-user.component';
     IonLabel
   ]
 })
-export class ChatRoomComponent implements OnInit, OnDestroy {
+export class ChatRoomComponent implements ViewWillEnter, OnDestroy {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private chatService = inject(ChatService);
   private authService = inject(AuthService);
   private modalCtrl = inject(ModalController);
   private popoverCtrl = inject(PopoverController);
+  private actionSheetCtrl = inject(ActionSheetController);
+  private alertCtrl = inject(AlertController);
+  private firestore = inject(Firestore);
 
   groupId: string = '';
   groupName: string = 'General';
@@ -67,18 +75,28 @@ export class ChatRoomComponent implements OnInit, OnDestroy {
   currentUser: any = null;
   isGoogleUser: boolean = false;
   currentMemberIds: string[] = [];
+  userRole: 'student' | 'professor' = 'student';
 
   private msgSub!: Subscription;
 
   constructor() {
-    addIcons({ arrowBackOutline, sendOutline, personAddOutline, ellipsisVertical, informationCircleOutline, personCircleOutline });
+    addIcons({ arrowBackOutline, sendOutline, personAddOutline, ellipsisVertical, informationCircleOutline, personCircleOutline, peopleOutline });
   }
 
-  ngOnInit() {
+  ionViewWillEnter() {
     this.currentUser = this.authService.currentUser;
     this.currentUserId = this.currentUser?.uid || '';
-    if (this.currentUser && this.currentUser.providerData) {
-      this.isGoogleUser = this.currentUser.providerData.some((p: any) => p.providerId === 'google.com');
+    if (this.currentUser) {
+      if (this.currentUser.providerData) {
+        this.isGoogleUser = this.currentUser.providerData.some((p: any) => p.providerId === 'google.com');
+      }
+      
+      // Cargar rol cada vez que se entra a la vista
+      getDoc(doc(this.firestore, `users/${this.currentUserId}`)).then(snap => {
+        if (snap.exists()) {
+          this.userRole = snap.data()['role'] || 'student';
+        }
+      });
     }
     
     this.route.paramMap.subscribe(params => {
@@ -121,6 +139,97 @@ export class ChatRoomComponent implements OnInit, OnDestroy {
   async openGroupInfo() {
     this.popoverCtrl.dismiss();
     this.router.navigate(['/group-info', this.groupId]);
+  }
+
+  async openManageMembers() {
+    this.popoverCtrl.dismiss();
+    const modal = await this.modalCtrl.create({
+      component: ManageMembersComponent,
+      componentProps: {
+        groupId: this.groupId,
+        currentMemberIds: this.currentMemberIds
+      },
+      breakpoints: [0, 0.5, 0.9],
+      initialBreakpoint: 0.9
+    });
+    await modal.present();
+  }
+
+  async onMessageContextMenu(event: Event, msg: any) {
+    event.preventDefault(); // Prevenir menu nativo
+    const isMine = msg.sent_by._id === this.currentUserId;
+    const isProfessor = this.userRole === 'professor';
+
+    const buttons = [];
+
+    // Editar (solo si es mio)
+    if (isMine) {
+      buttons.push({
+        text: 'Editar',
+        icon: 'pencil',
+        handler: () => {
+          this.promptEditMessage(msg);
+        }
+      });
+    }
+
+    // Eliminar (si es mio o si soy profesor)
+    if (isMine || isProfessor) {
+      buttons.push({
+        text: 'Eliminar',
+        icon: 'trash',
+        role: 'destructive',
+        handler: () => {
+          this.chatService.deleteMessage(this.groupId, msg._id);
+        }
+      });
+    }
+
+    if (buttons.length === 0) return; // No hay acciones permitidas
+
+    buttons.push({
+      text: 'Cancelar',
+      icon: 'close',
+      role: 'cancel'
+    });
+
+    const actionSheet = await this.actionSheetCtrl.create({
+      header: 'Opciones de mensaje',
+      buttons: buttons,
+      cssClass: 'custom-action-sheet'
+    });
+
+    await actionSheet.present();
+  }
+
+  async promptEditMessage(msg: any) {
+    const alert = await this.alertCtrl.create({
+      header: 'Editar mensaje',
+      cssClass: 'custom-alert',
+      inputs: [
+        {
+          name: 'newText',
+          type: 'text',
+          value: msg.description,
+          placeholder: 'Escribe tu nuevo mensaje...'
+        }
+      ],
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel'
+        },
+        {
+          text: 'Guardar',
+          handler: (data) => {
+            if (data.newText && data.newText.trim() !== '') {
+              this.chatService.editMessage(this.groupId, msg._id, data.newText.trim());
+            }
+          }
+        }
+      ]
+    });
+    await alert.present();
   }
 
   async sendMessage() {

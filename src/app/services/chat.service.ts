@@ -10,7 +10,9 @@ import {
   where,
   doc,
   updateDoc,
-  arrayUnion
+  arrayUnion,
+  deleteDoc,
+  arrayRemove
 } from '@angular/fire/firestore';
 import { AuthService } from './auth.service';
 import { Observable } from 'rxjs';
@@ -95,5 +97,25 @@ export class ChatService {
     // Order by sent_at ascending (oldest first for chat view)
     const q = query(messagesRef, orderBy('sent_at', 'asc'));
     return collectionData(q, { idField: '_id' });
+  }
+
+  async deleteMessage(groupId: string, messageId: string) {
+    const messageRef = doc(this.firestore, `groups/${groupId}/messages/${messageId}`);
+    return await deleteDoc(messageRef);
+  }
+
+  async editMessage(groupId: string, messageId: string, newText: string) {
+    const messageRef = doc(this.firestore, `groups/${groupId}/messages/${messageId}`);
+    return await updateDoc(messageRef, {
+      description: newText,
+      edited: true // Opcional, para mostrar "Editado" en UI
+    });
+  }
+
+  async kickUser(groupId: string, userId: string) {
+    const groupDocRef = doc(this.firestore, `groups/${groupId}`);
+    return await updateDoc(groupDocRef, {
+      memberIds: arrayRemove(userId)
+    });
   }
 }
