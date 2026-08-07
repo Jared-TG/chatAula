@@ -53,6 +53,20 @@
           class="custom-textarea"
         ></textarea>
       </div>
+
+      <div class="form-group">
+        <label>ETIQUETA PRINCIPAL</label>
+        <div class="tags-container">
+          <div 
+            *ngFor="let tag of availableTags"
+            class="tag-chip"
+            [class.selected]="groupForm.value.tag === tag"
+            (click)="selectTag(tag)"
+          >
+            {{ tag }}
+          </div>
+        </div>
+      </div>
     </form>
 
     <div class="type-cards">

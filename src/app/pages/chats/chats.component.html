@@ -25,35 +25,35 @@
     
     <div class="search-container">
       <ion-searchbar 
-        placeholder="Buscar sala" 
+        placeholder="Buscar por nombre..." 
+        class="custom-searchbar"
         searchIcon="search-outline"
-        class="custom-searchbar">
+        [value]="searchQuery"
+        (ionInput)="onSearchChange($event)">
       </ion-searchbar>
     </div>
 
     <div class="chips-container">
-      <ion-chip class="chip-active">
+      <ion-chip 
+        [class.chip-active]="selectedTag === 'Todas'"
+        (click)="selectTag('Todas')">
         <ion-label>Todas</ion-label>
       </ion-chip>
-      <ion-chip>
-        <ion-label>Académicas</ion-label>
-      </ion-chip>
-      <ion-chip>
-        <ion-label>Social</ion-label>
-      </ion-chip>
-      <ion-chip>
-        <ion-label>Urgente</ion-label>
+      <ion-chip 
+        *ngFor="let tag of availableTags"
+        [class.chip-active]="selectedTag === tag"
+        (click)="selectTag(tag)">
+        <ion-label>{{ tag }}</ion-label>
       </ion-chip>
     </div>
 
-    <div class="empty-state" *ngIf="(groups$ | async)?.length === 0">
+    <div class="empty-state" *ngIf="filteredGroups.length === 0">
       <ion-icon name="chatbubbles-outline"></ion-icon>
-      <p>No hay salas de chat disponibles. ¡Crea la primera!</p>
+      <p>No hay salas disponibles con estos filtros. ¡Crea una!</p>
     </div>
 
-    <div class="groups-list" *ngIf="(groups$ | async) as groups">
-      <!-- Mapeo de grupos reales de Firebase -->
-      <div class="chat-card" *ngFor="let group of groups; let i = index" (click)="openChatRoom(group._id)">
+    <div class="groups-list" *ngIf="filteredGroups.length > 0">
+      <div class="chat-card" *ngFor="let group of filteredGroups; let i = index" (click)="openChatRoom(group._id)">
         <div class="card-border" [ngClass]="getCardBorderClass(i)"></div>
         <div class="card-content">
           <div class="icon-wrapper" [ngClass]="getCardIconClass(i)">

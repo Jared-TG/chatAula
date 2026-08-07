@@ -28,7 +28,7 @@ export class ChatService {
 
   // --- GROUPS (SALAS) ---
 
-  async createGroup(name: string, description: string) {
+  async createGroup(name: string, description: string, tag: string = 'Académicas') {
     const user = this.authService.currentUser;
     if (!user) throw new Error('User not authenticated');
 
@@ -38,6 +38,7 @@ export class ChatService {
     const groupData = {
       name,
       description,
+      tag,
       created_at: serverTimestamp(),
       memberIds: [user.uid],
       created_by: {

@@ -200,6 +200,36 @@ ion-content {
         color: #9aa0a6;
       }
     }
+    
+    .tags-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 8px;
+      margin-bottom: 16px;
+
+      .tag-chip {
+        padding: 8px 16px;
+        background-color: #f1f3f4;
+        color: #5f6368;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        border: 1px solid transparent;
+
+        &.selected {
+          background-color: #0b57d0;
+          color: #ffffff;
+          box-shadow: 0 2px 6px rgba(11, 87, 208, 0.25);
+        }
+
+        &:hover:not(.selected) {
+          background-color: #e8eaed;
+        }
+      }
+    }
   }
 }
 

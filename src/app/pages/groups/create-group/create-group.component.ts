@@ -59,7 +59,8 @@ export class CreateGroupComponent implements OnInit {
 
   groupForm = new FormGroup({
     name: new FormControl('', [Validators.required, Validators.minLength(3)]),
-    description: new FormControl('', [Validators.required])
+    description: new FormControl('', [Validators.required]),
+    tag: new FormControl('Académicas', [Validators.required])
   });
 
   selectedType: 'colaborativo' | 'organizado' = 'colaborativo';
@@ -67,6 +68,8 @@ export class CreateGroupComponent implements OnInit {
   
   user: User | null = null;
   isGoogleUser = false;
+  
+  availableTags = ['Académicas', 'Social', 'Urgente', 'Tareas', 'Reunión', 'Salidas'];
 
   constructor() {
     addIcons({ 
@@ -88,6 +91,10 @@ export class CreateGroupComponent implements OnInit {
   selectType(type: 'colaborativo' | 'organizado') {
     this.selectedType = type;
   }
+  
+  selectTag(tag: string) {
+    this.groupForm.controls.tag.setValue(tag);
+  }
 
   dismiss() {
     this.modalCtrl.dismiss();
@@ -97,8 +104,8 @@ export class CreateGroupComponent implements OnInit {
     if (this.groupForm.valid) {
       this.isSubmitting = true;
       try {
-        const { name, description } = this.groupForm.value;
-        await this.chatService.createGroup(name!, description!);
+        const { name, description, tag } = this.groupForm.value;
+        await this.chatService.createGroup(name!, description!, tag!);
         this.modalCtrl.dismiss({ created: true });
       } catch (error) {
         console.error('Error al crear sala:', error);

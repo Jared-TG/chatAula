@@ -60,7 +60,12 @@ export class ChatsComponent implements OnInit {
   private authService = inject(AuthService);
   private router = inject(Router);
 
-  groups$!: Observable<any[]>;
+  allGroups: any[] = [];
+  filteredGroups: any[] = [];
+  availableTags: string[] = [];
+  selectedTag: string = 'Todas';
+  searchQuery: string = '';
+  
   user: User | null = null;
   isGoogleUser = false;
 
@@ -79,7 +84,52 @@ export class ChatsComponent implements OnInit {
   ngOnInit() {
     this.user = this.authService.currentUser;
     this.isGoogleUser = this.user?.providerData.some(p => p.providerId === 'google.com') ?? false;
-    this.groups$ = this.chatService.getGroups();
+    
+    this.chatService.getGroups().subscribe(groups => {
+      this.allGroups = groups;
+      this.extractTags();
+      this.filterGroups();
+    });
+  }
+
+  extractTags() {
+    const tagsSet = new Set<string>();
+    this.allGroups.forEach(g => {
+      if (g.tag) {
+        tagsSet.add(g.tag);
+      }
+    });
+    this.availableTags = Array.from(tagsSet).sort();
+    
+    // Si la etiqueta seleccionada ya no existe, volver a 'Todas'
+    if (this.selectedTag !== 'Todas' && !this.availableTags.includes(this.selectedTag)) {
+      this.selectedTag = 'Todas';
+    }
+  }
+
+  onSearchChange(event: any) {
+    this.searchQuery = event.detail.value || '';
+    this.filterGroups();
+  }
+
+  selectTag(tag: string) {
+    this.selectedTag = tag;
+    this.filterGroups();
+  }
+
+  filterGroups() {
+    let temp = [...this.allGroups];
+
+    if (this.searchQuery.trim() !== '') {
+      const q = this.searchQuery.toLowerCase();
+      temp = temp.filter(g => g.name.toLowerCase().includes(q));
+    }
+
+    if (this.selectedTag !== 'Todas') {
+      temp = temp.filter(g => g.tag === this.selectedTag);
+    }
+
+    this.filteredGroups = temp;
   }
 
   openCreateGroup() {
