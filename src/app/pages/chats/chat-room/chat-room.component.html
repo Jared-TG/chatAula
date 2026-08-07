@@ -1,0 +1,86 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="goBack()" class="back-btn">
+        <ion-icon name="arrow-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    
+    <div class="chat-header-title">
+      <h2>{{ groupName }}</h2>
+      <div class="status-indicator">
+        <span class="dot"></span>
+        Mensajes en tiempo real
+      </div>
+    </div>
+
+    <div class="header-actions" slot="end" style="display: flex; align-items: center; margin-right: 5px;">
+      
+      <!-- Avatar del usuario -->
+      <div class="avatar-header-ring" [class.google-ring]="isGoogleUser && currentUser?.photoURL">
+        <div class="avatar-header-inner">
+          <img *ngIf="isGoogleUser && currentUser?.photoURL" [src]="currentUser!.photoURL" alt="Avatar" />
+          <ion-icon *ngIf="!isGoogleUser || !currentUser?.photoURL" name="person-circle-outline" class="avatar-header-placeholder" style="color: #0b57d0; font-size: 32px;"></ion-icon>
+        </div>
+      </div>
+
+      <ion-button id="group-menu-btn" fill="clear">
+        <ion-icon name="ellipsis-vertical" style="color: #0b57d0; font-size: 24px;"></ion-icon>
+      </ion-button>
+
+      <ion-popover trigger="group-menu-btn" triggerAction="click" dismissOnSelect="true" class="custom-popover">
+        <ng-template>
+          <ion-content>
+            <ion-list lines="none" class="group-menu-list">
+              <ion-item button (click)="openInviteModal()" [detail]="false">
+                <ion-icon name="person-add-outline" slot="start" style="color: #0b57d0;"></ion-icon>
+                <ion-label>Añadir miembros</ion-label>
+              </ion-item>
+              <ion-item button (click)="openGroupInfo()" [detail]="false">
+                <ion-icon name="information-circle-outline" slot="start" style="color: #5f6368;"></ion-icon>
+                <ion-label>Info. del grupo</ion-label>
+              </ion-item>
+            </ion-list>
+          </ion-content>
+        </ng-template>
+      </ion-popover>
+    </div>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="chat-container">
+    <div *ngFor="let msg of messages" 
+         class="message-wrapper" 
+         [ngClass]="{'mine': msg.sent_by._id === currentUserId}">
+         
+      <div class="sender-name" *ngIf="msg.sent_by._id !== currentUserId">
+        {{ msg.sent_by.username }}
+      </div>
+      
+      <div class="message-bubble">
+        <p>{{ msg.description }}</p>
+      </div>
+      
+      <div class="message-time">
+        {{ msg.sent_at?.toDate ? (msg.sent_at.toDate() | date:'shortTime') : '' }}
+      </div>
+    </div>
+  </div>
+</ion-content>
+
+<ion-footer class="ion-no-border">
+  <div class="chat-input-container">
+    <div class="input-wrapper">
+      <input 
+        type="text" 
+        [(ngModel)]="newMessage" 
+        (keyup.enter)="sendMessage()"
+        placeholder="Escribe un mensaje..."
+      />
+      <button class="send-btn" (click)="sendMessage()" [disabled]="!newMessage.trim()">
+        <ion-icon name="send-outline"></ion-icon>
+      </button>
+    </div>
+  </div>
+</ion-footer>

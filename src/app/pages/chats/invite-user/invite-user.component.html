@@ -1,0 +1,60 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-title>Invitar a la sala</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismiss()">
+        <ion-icon name="close-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-searchbar 
+      placeholder="Buscar por nombre o correo..." 
+      (ionInput)="searchUsers($event)"
+      [debounce]="250"
+      class="custom-searchbar">
+    </ion-searchbar>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="bg-gray">
+  <ion-list class="users-list" lines="none">
+    
+    <div class="empty-state" *ngIf="filteredUsers.length === 0">
+      <p>No se encontraron estudiantes.</p>
+    </div>
+
+    <ion-item *ngFor="let user of filteredUsers" class="user-item">
+      <ion-avatar slot="start" class="custom-avatar" [class.google-avatar]="user.provider === 'google'">
+        <img *ngIf="user.photoURL" [src]="user.photoURL" />
+        <div *ngIf="!user.photoURL" class="avatar-initial">
+          {{ user.username ? user.username.charAt(0).toUpperCase() : '?' }}
+        </div>
+      </ion-avatar>
+      
+      <ion-label>
+        <h2>{{ user.username }}</h2>
+        <p>{{ user.email }}</p>
+      </ion-label>
+
+      <ion-button 
+        slot="end" 
+        fill="clear" 
+        (click)="invite(user.uid)" 
+        [disabled]="isMember(user.uid) || isInviting[user.uid]"
+        [class.is-member]="isMember(user.uid)">
+        
+        <ng-container *ngIf="isMember(user.uid); else inviteBtn">
+          <ion-icon name="checkmark-circle" slot="start"></ion-icon>
+          Miembro
+        </ng-container>
+        
+        <ng-template #inviteBtn>
+          <ion-icon name="person-add-outline" slot="icon-only" *ngIf="!isInviting[user.uid]"></ion-icon>
+          <span *ngIf="isInviting[user.uid]" class="spinner"></span>
+        </ng-template>
+
+      </ion-button>
+    </ion-item>
+  </ion-list>
+</ion-content>

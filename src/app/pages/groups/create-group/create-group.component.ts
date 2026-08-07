@@ -1,6 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
 import { 
   ReactiveFormsModule, 
   FormGroup, 
@@ -10,10 +9,15 @@ import {
 import { 
   IonHeader, 
   IonToolbar, 
+  IonTitle, 
   IonContent, 
   IonButton, 
   IonButtons, 
-  IonIcon
+  IonIcon,
+  IonItem,
+  IonInput,
+  IonTextarea,
+  ModalController
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { 
@@ -25,14 +29,14 @@ import {
   personCircleOutline,
   addCircleOutline
 } from 'ionicons/icons';
-import { ChatService } from '../../services/chat.service';
-import { AuthService } from '../../services/auth.service';
+import { ChatService } from '../../../services/chat.service';
+import { AuthService } from '../../../services/auth.service';
 import { User } from '@angular/fire/auth';
 
 @Component({
-  selector: 'app-groups',
-  templateUrl: './groups.component.html',
-  styleUrl: './groups.component.scss',
+  selector: 'app-create-group',
+  templateUrl: './create-group.component.html',
+  styleUrl: './create-group.component.scss',
   standalone: true,
   imports: [
     CommonModule, 
@@ -45,10 +49,10 @@ import { User } from '@angular/fire/auth';
     IonIcon,
   ]
 })
-export class GroupsComponent implements OnInit {
+export class CreateGroupComponent implements OnInit {
   private chatService = inject(ChatService);
   private authService = inject(AuthService);
-  private router = inject(Router);
+  private modalCtrl = inject(ModalController);
 
   groupForm = new FormGroup({
     name: new FormControl('', [Validators.required, Validators.minLength(3)]),
@@ -83,7 +87,7 @@ export class GroupsComponent implements OnInit {
   }
 
   dismiss() {
-    this.router.navigate(['/tabs/chats']);
+    this.modalCtrl.dismiss();
   }
 
   async createGroup() {
@@ -92,7 +96,7 @@ export class GroupsComponent implements OnInit {
       try {
         const { name, description } = this.groupForm.value;
         await this.chatService.createGroup(name!, description!);
-        this.router.navigate(['/tabs/chats']);
+        this.modalCtrl.dismiss({ created: true });
       } catch (error) {
         console.error('Error al crear sala:', error);
       } finally {

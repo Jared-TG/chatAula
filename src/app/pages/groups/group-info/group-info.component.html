@@ -1,0 +1,92 @@
+<ion-header class="ion-no-border custom-header">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="goBackToChat()" class="back-btn">
+        <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Información de la sala</ion-title>
+    <!-- Placeholder for user avatar in header if needed like the screenshot -->
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="bg-gray">
+  <div class="info-container" *ngIf="group">
+    
+    <!-- Banner Principal -->
+    <div class="banner-card">
+      <img [src]="bannerImage" alt="Banner de la sala" class="banner-img" />
+      <div class="banner-overlay">
+        <h2>{{ group.name }}</h2>
+        <p>Creado por {{ group.createdBy || 'Administrador' }}</p>
+      </div>
+    </div>
+
+    <!-- Sección de Descripción -->
+    <div class="info-card description-card">
+      <div class="card-header-label">
+        <ion-icon name="information-circle-outline" color="primary"></ion-icon>
+        <span>DESCRIPCIÓN</span>
+      </div>
+      <p class="description-text">
+        {{ group.description || 'Sin descripción disponible para esta sala.' }}
+      </p>
+    </div>
+
+    <!-- Sección de Actividad -->
+    <div class="info-card activity-card">
+      <div class="card-header-label">
+        <ion-icon name="stats-chart-outline" color="success"></ion-icon>
+        <span class="success-text">ACTIVIDAD</span>
+      </div>
+      <div class="activity-stats">
+        <div class="stat-main">
+          <h1>{{ totalMessages }}</h1>
+          <p>Mensajes totales</p>
+        </div>
+      </div>
+      <div class="divider"></div>
+      <div class="popularity-row">
+        <span>Popularidad</span>
+        <span class="pop-badge" [ngClass]="popularity.toLowerCase()">{{ popularity }}</span>
+      </div>
+    </div>
+
+    <!-- Sección de Fecha de Creación -->
+    <div class="info-card date-card" *ngIf="creationDate">
+      <div class="card-header-label">
+        <ion-icon name="calendar-outline" color="warning"></ion-icon>
+        <span class="warning-text">FECHA DE CREACIÓN</span>
+      </div>
+      <div class="date-content">
+        <p class="main-date">{{ creationDate | date:'dd \'de\' MMMM, yyyy' }}</p>
+        <p class="sub-date">Ciclo Lectivo {{ creationDate | date:'yyyy' }}</p>
+      </div>
+    </div>
+
+    <!-- Administrador (Creador) -->
+    <div class="info-card admin-card">
+      <div class="admin-content">
+        <div class="admin-avatar-bg">
+          <ion-icon name="school-outline" color="primary"></ion-icon>
+        </div>
+        <div class="admin-info">
+          <h3>{{ group.createdBy || 'Administrador' }}</h3>
+          <p>Administrador del Aula</p>
+        </div>
+        <ion-button fill="clear" class="contact-btn">
+          <ion-icon slot="start" name="mail-outline"></ion-icon>
+          Contactar
+        </ion-button>
+      </div>
+    </div>
+
+    <div class="action-footer">
+      <ion-button expand="block" class="primary-action-btn" (click)="goBackToChat()">
+        <ion-icon slot="start" name="chatbubbles-outline"></ion-icon>
+        Volver al chat
+      </ion-button>
+    </div>
+
+  </div>
+</ion-content>
