@@ -33,6 +33,8 @@ import { ChatService } from '../../../services/chat.service';
 import { AuthService } from '../../../services/auth.service';
 import { User } from '@angular/fire/auth';
 
+import { Router } from '@angular/router';
+
 @Component({
   selector: 'app-create-group',
   templateUrl: './create-group.component.html',
@@ -53,6 +55,7 @@ export class CreateGroupComponent implements OnInit {
   private chatService = inject(ChatService);
   private authService = inject(AuthService);
   private modalCtrl = inject(ModalController);
+  private router = inject(Router);
 
   groupForm = new FormGroup({
     name: new FormControl('', [Validators.required, Validators.minLength(3)]),
@@ -103,5 +106,11 @@ export class CreateGroupComponent implements OnInit {
         this.isSubmitting = false;
       }
     }
+  }
+
+  async logout() {
+    await this.authService.logout();
+    this.modalCtrl.dismiss(); // Dismiss the modal first
+    this.router.navigate(['/login']);
   }
 }

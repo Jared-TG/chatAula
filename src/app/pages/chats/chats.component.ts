@@ -114,4 +114,9 @@ export class ChatsComponent implements OnInit {
     // Simple format just for UI mockup matching
     return new Intl.DateTimeFormat('es-MX', { hour: 'numeric', minute: 'numeric', hour12: true }).format(date);
   }
+
+  async logout() {
+    await this.authService.logout();
+    this.router.navigate(['/login']);
+  }
 }

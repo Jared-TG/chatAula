@@ -21,7 +21,8 @@ import {
   personCircleOutline,
   logOutOutline,
   schoolOutline,
-  checkmarkCircle
+  checkmarkCircle,
+  personOutline
 } from 'ionicons/icons';
 import { User } from '@angular/fire/auth';
 import { doc, getDoc } from '@angular/fire/firestore';
@@ -64,7 +65,8 @@ export class ProfileComponent implements OnInit {
       personCircleOutline,
       logOutOutline,
       schoolOutline,
-      checkmarkCircle
+      checkmarkCircle,
+      personOutline
     });
   }
 

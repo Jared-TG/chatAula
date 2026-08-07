@@ -4,7 +4,7 @@
       <div class="header-user-info">
         <div class="avatar-header-ring" [class.google-ring]="isGoogleUser && user?.photoURL">
           <div class="avatar-header-inner">
-            <img *ngIf="isGoogleUser && user?.photoURL" [src]="user!.photoURL" alt="Avatar" />
+            <img *ngIf="isGoogleUser && user?.photoURL" [src]="user!.photoURL" alt="Avatar" referrerpolicy="no-referrer" />
             <ion-icon *ngIf="!isGoogleUser || !user?.photoURL" name="person-circle-outline" class="avatar-header-placeholder"></ion-icon>
           </div>
         </div>
@@ -14,7 +14,7 @@
         </div>
       </div>
       <div class="header-actions">
-        <ion-icon name="log-out-outline" class="exit-icon" style="transform: scaleX(-1);"></ion-icon>
+        <ion-icon name="log-out-outline" class="exit-icon" style="transform: scaleX(-1);" (click)="logout()"></ion-icon>
       </div>
     </div>
   </ion-toolbar>

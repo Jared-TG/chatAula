@@ -100,4 +100,9 @@ export class GroupsComponent implements OnInit {
       }
     }
   }
+
+  async logout() {
+    await this.authService.logout();
+    this.router.navigate(['/login']);
+  }
 }

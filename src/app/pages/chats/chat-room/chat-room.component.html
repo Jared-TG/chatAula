@@ -19,7 +19,7 @@
       <!-- Avatar del usuario -->
       <div class="avatar-header-ring" [class.google-ring]="isGoogleUser && currentUser?.photoURL">
         <div class="avatar-header-inner">
-          <img *ngIf="isGoogleUser && currentUser?.photoURL" [src]="currentUser!.photoURL" alt="Avatar" />
+          <img *ngIf="isGoogleUser && currentUser?.photoURL" [src]="currentUser!.photoURL" alt="Avatar" referrerpolicy="no-referrer" />
           <ion-icon *ngIf="!isGoogleUser || !currentUser?.photoURL" name="person-circle-outline" class="avatar-header-placeholder" style="color: #0b57d0; font-size: 32px;"></ion-icon>
         </div>
       </div>
