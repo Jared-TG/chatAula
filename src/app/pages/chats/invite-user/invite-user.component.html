@@ -26,7 +26,7 @@
 
     <ion-item *ngFor="let user of filteredUsers" class="user-item">
       <ion-avatar slot="start" class="custom-avatar" [class.google-avatar]="user.provider === 'google'">
-        <img *ngIf="user.photoURL" [src]="user.photoURL" />
+        <img *ngIf="user.photoURL" [src]="user.photoURL" referrerpolicy="no-referrer" />
         <div *ngIf="!user.photoURL" class="avatar-initial">
           {{ user.username ? user.username.charAt(0).toUpperCase() : '?' }}
         </div>

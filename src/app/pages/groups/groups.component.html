@@ -6,10 +6,10 @@
         <span class="header-logo">Chat Aula</span>
       </div>
       <div class="header-actions">
-        <ion-icon name="log-out-outline" class="exit-icon"></ion-icon>
+        <ion-icon name="log-out-outline" class="exit-icon" (click)="logout()"></ion-icon>
         <div class="avatar-header-ring" [class.google-ring]="isGoogleUser && user?.photoURL">
           <div class="avatar-header-inner">
-            <img *ngIf="isGoogleUser && user?.photoURL" [src]="user!.photoURL" alt="Avatar" />
+            <img *ngIf="isGoogleUser && user?.photoURL" [src]="user!.photoURL" alt="Avatar" referrerpolicy="no-referrer" />
             <ion-icon *ngIf="!isGoogleUser || !user?.photoURL" name="person-circle-outline" class="avatar-header-placeholder"></ion-icon>
           </div>
         </div>
@@ -52,6 +52,20 @@
           rows="3"
           class="custom-textarea"
         ></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>ETIQUETA PRINCIPAL</label>
+        <div class="tags-container">
+          <div 
+            *ngFor="let tag of availableTags"
+            class="tag-chip"
+            [class.selected]="groupForm.value.tag === tag"
+            (click)="selectTag(tag)"
+          >
+            {{ tag }}
+          </div>
+        </div>
       </div>
     </form>
 

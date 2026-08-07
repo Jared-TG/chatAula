@@ -58,14 +58,7 @@ ion-header {
         color: #0b57d0;
       }
 
-      &.secondary-btn {
-        background-color: #f1f3f4;
-        color: #5f6368;
 
-        &:active {
-          background-color: #e8eaed;
-        }
-      }
     }
   }
 }
@@ -140,6 +133,10 @@ ion-content {
         background: #e6f4ea;
         color: #137333;
       }
+      &.role-icon-bg {
+        background: #f3e8fd;
+        color: #9333ea;
+      }
 
       .label-icon {
         font-size: 18px;
@@ -177,6 +174,53 @@ ion-content {
       border-radius: 50%;
       background: #137333;
       animation: pulse-dot 2s ease-in-out infinite;
+    }
+  }
+
+  .role-change-btn {
+    width: 100%;
+    margin-top: 12px;
+    margin-bottom: 8px;
+    height: 44px;
+    background: #0b57d0;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(11, 87, 208, 0.2);
+
+    &:hover {
+      background: #0842a0;
+    }
+    &:active {
+      transform: scale(0.98);
+    }
+    &:disabled {
+      opacity: 0.8;
+      cursor: not-allowed;
+    }
+
+    &.secondary-btn {
+      background: #f1f3f4;
+      color: #5f6368;
+      box-shadow: none;
+
+      &:hover {
+        background: #e8eaed;
+      }
+    }
+
+    ion-spinner {
+      margin-right: 8px;
+      width: 20px;
+      height: 20px;
+      --color: currentColor;
     }
   }
 }

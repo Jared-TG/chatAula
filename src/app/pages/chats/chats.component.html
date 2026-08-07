@@ -4,7 +4,7 @@
       <div class="header-user-info">
         <div class="avatar-header-ring" [class.google-ring]="isGoogleUser && user?.photoURL">
           <div class="avatar-header-inner">
-            <img *ngIf="isGoogleUser && user?.photoURL" [src]="user!.photoURL" alt="Avatar" />
+            <img *ngIf="isGoogleUser && user?.photoURL" [src]="user!.photoURL" alt="Avatar" referrerpolicy="no-referrer" />
             <ion-icon *ngIf="!isGoogleUser || !user?.photoURL" name="person-circle-outline" class="avatar-header-placeholder"></ion-icon>
           </div>
         </div>
@@ -14,7 +14,7 @@
         </div>
       </div>
       <div class="header-actions">
-        <ion-icon name="log-out-outline" class="exit-icon" style="transform: scaleX(-1);"></ion-icon>
+        <ion-icon name="log-out-outline" class="exit-icon" style="transform: scaleX(-1);" (click)="logout()"></ion-icon>
       </div>
     </div>
   </ion-toolbar>
@@ -25,35 +25,35 @@
     
     <div class="search-container">
       <ion-searchbar 
-        placeholder="Buscar sala" 
+        placeholder="Buscar por nombre..." 
+        class="custom-searchbar"
         searchIcon="search-outline"
-        class="custom-searchbar">
+        [value]="searchQuery"
+        (ionInput)="onSearchChange($event)">
       </ion-searchbar>
     </div>
 
     <div class="chips-container">
-      <ion-chip class="chip-active">
+      <ion-chip 
+        [class.chip-active]="selectedTag === 'Todas'"
+        (click)="selectTag('Todas')">
         <ion-label>Todas</ion-label>
       </ion-chip>
-      <ion-chip>
-        <ion-label>Académicas</ion-label>
-      </ion-chip>
-      <ion-chip>
-        <ion-label>Social</ion-label>
-      </ion-chip>
-      <ion-chip>
-        <ion-label>Urgente</ion-label>
+      <ion-chip 
+        *ngFor="let tag of availableTags"
+        [class.chip-active]="selectedTag === tag"
+        (click)="selectTag(tag)">
+        <ion-label>{{ tag }}</ion-label>
       </ion-chip>
     </div>
 
-    <div class="empty-state" *ngIf="(groups$ | async)?.length === 0">
+    <div class="empty-state" *ngIf="filteredGroups.length === 0">
       <ion-icon name="chatbubbles-outline"></ion-icon>
-      <p>No hay salas de chat disponibles. ¡Crea la primera!</p>
+      <p>No hay salas disponibles con estos filtros. ¡Crea una!</p>
     </div>
 
-    <div class="groups-list" *ngIf="(groups$ | async) as groups">
-      <!-- Mapeo de grupos reales de Firebase -->
-      <div class="chat-card" *ngFor="let group of groups; let i = index" (click)="openChatRoom(group._id)">
+    <div class="groups-list" *ngIf="filteredGroups.length > 0">
+      <div class="chat-card" *ngFor="let group of filteredGroups; let i = index" (click)="openChatRoom(group._id)">
         <div class="card-border" [ngClass]="getCardBorderClass(i)"></div>
         <div class="card-content">
           <div class="icon-wrapper" [ngClass]="getCardIconClass(i)">
@@ -62,9 +62,12 @@
           <div class="text-content">
             <div class="title-row">
               <h3>{{ group.name }}</h3>
-              <span class="time">{{ formatTime(group.created_at) }}</span>
+              <span class="time">{{ formatTime(group.lastMessage?.sent_at || group.created_at) }}</span>
             </div>
-            <p>{{ group.description }}</p>
+            <div class="subtitle-row">
+              <p class="truncate-text">{{ group.lastMessage?.description || group.description }}</p>
+              <ion-badge *ngIf="getUnreadCount(group) > 0" color="primary" class="unread-badge">{{ getUnreadCount(group) }}</ion-badge>
+            </div>
           </div>
         </div>
       </div>

@@ -52,7 +52,8 @@ export class GroupsComponent implements OnInit {
 
   groupForm = new FormGroup({
     name: new FormControl('', [Validators.required, Validators.minLength(3)]),
-    description: new FormControl('', [Validators.required])
+    description: new FormControl('', [Validators.required]),
+    tag: new FormControl('Académicas', [Validators.required])
   });
 
   selectedType: 'colaborativo' | 'organizado' = 'colaborativo';
@@ -60,6 +61,8 @@ export class GroupsComponent implements OnInit {
   
   user: User | null = null;
   isGoogleUser = false;
+  
+  availableTags = ['Académicas', 'Social', 'Urgente', 'Tareas', 'Reunión', 'Salidas'];
 
   constructor() {
     addIcons({ 
@@ -81,6 +84,10 @@ export class GroupsComponent implements OnInit {
   selectType(type: 'colaborativo' | 'organizado') {
     this.selectedType = type;
   }
+  
+  selectTag(tag: string) {
+    this.groupForm.controls.tag.setValue(tag);
+  }
 
   dismiss() {
     this.router.navigate(['/tabs/chats']);
@@ -90,8 +97,17 @@ export class GroupsComponent implements OnInit {
     if (this.groupForm.valid) {
       this.isSubmitting = true;
       try {
-        const { name, description } = this.groupForm.value;
-        await this.chatService.createGroup(name!, description!);
+        const { name, description, tag } = this.groupForm.value;
+        await this.chatService.createGroup(name!, description!, tag!);
+        
+        // Limpiar el formulario
+        this.groupForm.reset({
+          name: '',
+          description: '',
+          tag: 'Académicas'
+        });
+        this.selectedType = 'colaborativo';
+        
         this.router.navigate(['/tabs/chats']);
       } catch (error) {
         console.error('Error al crear sala:', error);
@@ -99,5 +115,10 @@ export class GroupsComponent implements OnInit {
         this.isSubmitting = false;
       }
     }
+  }
+
+  async logout() {
+    await this.authService.logout();
+    this.router.navigate(['/login']);
   }
 }

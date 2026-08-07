@@ -1,0 +1,48 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Gestionar miembros</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismiss()">
+        <ion-icon slot="icon-only" name="close-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  
+  <div class="loading-state" *ngIf="isLoading">
+    <ion-spinner name="crescent"></ion-spinner>
+    <p>Cargando miembros...</p>
+  </div>
+
+  <div *ngIf="!isLoading && members.length === 0" class="empty-state">
+    <p>No hay miembros disponibles para gestionar.</p>
+  </div>
+
+  <ion-list *ngIf="!isLoading && members.length > 0">
+    <ion-item *ngFor="let member of members">
+      <ion-avatar slot="start" class="member-avatar">
+        <img *ngIf="member.photoURL" [src]="member.photoURL" referrerpolicy="no-referrer" />
+        <div *ngIf="!member.photoURL" class="avatar-initial">
+          {{ member.username ? member.username.charAt(0).toUpperCase() : '?' }}
+        </div>
+      </ion-avatar>
+      <ion-label>
+        <h2>{{ member.username || 'Estudiante' }}</h2>
+        <p>{{ member.email }}</p>
+      </ion-label>
+      
+      <!-- Boton de expulsar (solo si no es él mismo) -->
+      <ion-button 
+        *ngIf="member.uid !== currentUserId" 
+        slot="end" 
+        color="danger" 
+        fill="clear"
+        (click)="confirmKick(member)">
+        <ion-icon slot="icon-only" name="person-remove-outline"></ion-icon>
+      </ion-button>
+    </ion-item>
+  </ion-list>
+  
+</ion-content>
