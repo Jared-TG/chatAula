@@ -30,6 +30,7 @@
             "inlineStyleLanguage": "scss",
             "assets": [
               "src/_redirects",
+              "public",
               {
                 "glob": "**/*",
                 "input": "src/assets",
