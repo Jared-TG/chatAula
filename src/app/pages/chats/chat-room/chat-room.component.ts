@@ -118,6 +118,11 @@ export class ChatRoomComponent implements OnInit, OnDestroy {
     await modal.present();
   }
 
+  async openGroupInfo() {
+    this.popoverCtrl.dismiss();
+    this.router.navigate(['/group-info', this.groupId]);
+  }
+
   async sendMessage() {
     if (!this.newMessage.trim() || !this.groupId) return;
     

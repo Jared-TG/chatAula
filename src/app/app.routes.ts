@@ -46,6 +46,11 @@ export const routes: Routes = [
     canActivate: [authGuard]
   },
   {
+    path: 'group-info/:id',
+    loadComponent: () => import('./pages/groups/group-info/group-info.component').then(m => m.GroupInfoComponent),
+    canActivate: [authGuard]
+  },
+  {
     path: '',
     redirectTo: 'login',
     pathMatch: 'full',
